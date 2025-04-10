@@ -1,42 +1,22 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { CreateEvent } from "@/components/Organisms/CreateEvent/CreateEvent";
 import { FaPlus } from "react-icons/fa";
 import { EventModel } from "@/models/EventModel";
 import { Event } from "@/components/Organisms/Event/Event";
+import { getEvents } from "@/server/events/getEvents";
 
 export const Events = (): ReactElement => {
   const [open, setOpen] = useState(false);
-
-  const eventos:EventModel[] = [
-    {      
-      title: "Feria de Ciencias",
-      name: "Explorando el Mundo Científico",
-      description:
-        "Exhibición de proyectos científicos realizados por estudiantes de todos los grados, demostrando creatividad e innovación.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-    date:'9/04/2025'
-    },        
-    {      
-      title: "Feria de Ciencias",
-      name: "Explorando el Mundo Científico",
-      description:
-        "Exhibición de proyectos científicos realizados por estudiantes de todos los grados, demostrando creatividad e innovación.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-    date:'9/04/2025'
-    },        
-    {      
-      title: "Feria de Ciencias",
-      name: "Explorando el Mundo Científico",
-      description:
-        "Exhibición de proyectos científicos realizados por estudiantes de todos los grados, demostrando creatividad e innovación.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
-    date:'9/04/2025'
-    }   
-  ];
-
+  const [eventos,setEventos] = useState<EventModel[]>([]);
+  
+  useEffect(()=>{
+    const fetchData = async() => {
+      const data = await getEvents();
+      setEventos(data);
+    }
+    fetchData();
+  },[])
+  
   return (
     <section className="py-8">
       <div className="container mx-auto px-4">
@@ -45,8 +25,8 @@ export const Events = (): ReactElement => {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {eventos.map((evento)=>(
-            <Event {...evento}/>
+          {eventos.map((evento,id)=>(
+            <Event {...evento} key={id}/>
           ))}
         </div>
 

@@ -1,4 +1,7 @@
-import { useEffect, useRef, type ReactElement } from "react";
+import { EventModel } from "@/models/EventModel";
+import { FormEvent, useEffect, useRef, type ReactElement } from "react";
+import moment from 'moment';
+import { createEvent } from "@/server/events/createEvent";
 
 interface Props {
   open: boolean;
@@ -6,6 +9,7 @@ interface Props {
 }
 
 export const CreateEvent = ({ open, close }: Props): ReactElement => {
+
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -28,6 +32,24 @@ export const CreateEvent = ({ open, close }: Props): ReactElement => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleForm = async(event: FormEvent<HTMLFormElement>) =>{
+    // event.preventDefault();
+    const data = new FormData(event.currentTarget);
+
+    const currentFormData:EventModel = {
+      title: data.get('title') as string,
+      name: data.get('name') as string,
+      description: data.get('description') as string,
+      date: moment().format('D MMMM YYYY'),
+      imageUrl: ''
+    }
+
+    const response = await createEvent(currentFormData);    
+    console.log(response);
+  }
+
+
   if (open) {
     return (
       <div className="fixed inset-0  flex items-center justify-center z-50">
@@ -58,7 +80,7 @@ export const CreateEvent = ({ open, close }: Props): ReactElement => {
             </div>
 
             <div ref={modalRef} onClick={handleClick}>
-              <form>
+              <form onSubmit={handleForm}>
                 <div className="mb-4">
                   <label
                     className="block text-gray-700 text-sm font-bold mb-2"
@@ -69,7 +91,7 @@ export const CreateEvent = ({ open, close }: Props): ReactElement => {
                   <input
                     type="text"
                     id="titulo"
-                    name="titulo"
+                    name="title"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Ej: Feria de Ciencias"
                     required
@@ -86,7 +108,7 @@ export const CreateEvent = ({ open, close }: Props): ReactElement => {
                   <input
                     type="text"
                     id="nombre"
-                    name="nombre"
+                    name="name"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Ej: Explorando el Mundo Científico"
                     required
@@ -102,25 +124,14 @@ export const CreateEvent = ({ open, close }: Props): ReactElement => {
                   </label>
                   <textarea
                     id="descripcion"
-                    name="descripcion"
+                    name="description"
                     rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Descripción detallada del evento..."
                     required
                   />
                 </div>
-
-                <div className="mb-4">
-                  <input
-                    type="file"
-                    id="imagen"
-                    name="imagen"
-                    accept="image/*"
-                    className="w-full text-gray-700"
-                    required
-                  />
-                </div>
-
+                
                 <div className="flex justify-end space-x-3 mt-6">
                   <button
                     type="button"

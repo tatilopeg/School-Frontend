@@ -1,14 +1,15 @@
 import { type ReactElement } from "react";
 import type { EventModel } from "@/models/EventModel";
+import escudo from '@/assets/escudo.jpeg';
 
 export const Event = ({ date, description, title, imageUrl }: EventModel): ReactElement => {
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
       <div className="h-40 overflow-hidden">
         <img
-          src={imageUrl}
+          src={escudo}
           alt={title}
-          className="w-full h-full object-cover"
+          className="flex flex-row justify-center items-center h-full w-full object-cover"
           loading="lazy"
         />
       </div>
