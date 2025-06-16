@@ -3,3 +3,7 @@ export interface UserModel{
     username: string;
     rol: string;
 }
+
+export interface GQLUserResponseModel{
+    allUsers: UserModel[];
+}

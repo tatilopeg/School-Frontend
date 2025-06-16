@@ -5,3 +5,7 @@ export interface EventModel {
     date: string;
     imageUrl?: string;
 }
+
+export interface GQLEventResponseModel{
+    allEvents: EventModel[];
+}

@@ -1,27 +1,24 @@
-import { UserModel } from "@/models/UserModel";
-import { getPeople } from "@/server/people/getPeople";
-import { useEffect, useState, type ReactElement } from "react";
+import { type ReactElement } from "react";
+import { useQuery } from "@apollo/client";
+import { GET_USERS } from "@/server/people/getPeople.gql";
+import { GQLUserResponseModel } from "@/models/UserModel";
 
 export default function PeoplePage(): ReactElement {
-  const [people, setPeople] = useState<UserModel[]>([]);
+  const {loading,error,data={allUsers:[]}} = useQuery<GQLUserResponseModel>(GET_USERS);
 
-  useEffect(() => {
-    const fetchPeople = async () => {
-      const response = await getPeople();
-      setPeople(response);
-    };
-    fetchPeople();
-  }, []);
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">        
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">            
       <div className="max-w-3xl mx-auto">
         <h1 className="text-2xl text-center text-green-400 mb-8">
           Nuestros usuarios
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {people.map(({ id, username,rol }) => (
+          {data.allUsers.map(({ id, username,rol }) => (
             <div
               key={id}
               className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"

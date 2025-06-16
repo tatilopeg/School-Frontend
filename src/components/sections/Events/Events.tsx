@@ -1,22 +1,18 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useState } from "react";
+import { useQuery } from "@apollo/client";
 import { CreateEvent } from "@/components/Organisms/CreateEvent/CreateEvent";
 import { FaPlus } from "react-icons/fa";
-import { EventModel } from "@/models/EventModel";
 import { Event } from "@/components/Organisms/Event/Event";
-import { getEvents } from "@/server/events/getEvents";
+import { GET_EVENTS } from "@/server/events/getEvents.gql";
+import { GQLEventResponseModel } from "@/models/EventModel";
 
 export const Events = (): ReactElement => {
-  const [open, setOpen] = useState(false);
-  const [eventos,setEventos] = useState<EventModel[]>([]);
+  const [open, setOpen] = useState(false);  
+  const { error, loading, data = {allEvents:[]} } = useQuery<GQLEventResponseModel>(GET_EVENTS);
   
-  useEffect(()=>{
-    const fetchData = async() => {
-      const data = await getEvents();
-      setEventos(data);
-    }
-    fetchData();
-  },[])
-  
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
     <section className="py-8">
       <div className="container mx-auto px-4">
@@ -25,15 +21,15 @@ export const Events = (): ReactElement => {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {eventos.map((evento,id)=>(
-            <Event {...evento} key={id}/>
+          {data.allEvents.map((evento, id) => (
+            <Event {...evento} key={id} />
           ))}
         </div>
 
         <div
           className="mt-8 w-64 h-64 border-2 border-dashed border-green-300 flex flex-col items-center justify-center gap-3 rounded-2xl
                hover:border-solid hover:border-green-400 transition-all duration-300 ease-in-out cursor-pointer group   "
-          onClick={()=>setOpen(!open)}     
+          onClick={() => setOpen(!open)}
         >
           <FaPlus
             color="gainsboro"
@@ -45,7 +41,7 @@ export const Events = (): ReactElement => {
           </p>
         </div>
       </div>
-      <CreateEvent open={open} close={setOpen}/>
+      <CreateEvent open={open} close={setOpen} />
     </section>
   );
 };
