@@ -2,7 +2,7 @@ import { type ReactElement } from "react";
 import type { EventModel } from "@/models/EventModel";
 import escudo from '@/assets/escudo.jpeg';
 
-export const Event = ({ date, description, title, imageUrl }: EventModel): ReactElement => {
+export const Event = ({ date, description, title }: EventModel): ReactElement => {
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
       <div className="h-40 overflow-hidden">
