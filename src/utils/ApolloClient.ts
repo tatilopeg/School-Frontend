@@ -5,6 +5,6 @@ const client = new ApolloClient({
     uri: 'https://school-backend-final.onrender.com/api/graphql',
   }),
   cache: new InMemoryCache()
-});
+})
 
 export default client;
